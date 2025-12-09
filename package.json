@@ -1,6 +1,7 @@
 {
   "name": "crud-rest-api",
   "version": "1.0.0",
+  "type": "module",
   "description": "A CRUD application made by using more advanced techniques.",
   "main": "index.js",
   "scripts": {
