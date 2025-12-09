@@ -1,0 +1,25 @@
+services:
+  postgres:
+    image: postgres:latest
+    environment:
+      POSTGRES_USER: username
+      POSTGRES_PASSWORD: dbpassword
+      POSTGRES_DB: dbname
+    ports:
+      - "5432:5432" ## customize the port mapping as needed (e.g., "6006:5432")
+    volumes:
+      - postgres_data:/var/lib/postgresql
+      - ./user-table.sql:/docker-entrypoint-initdb.d/user-table.sql ## Creates user table from "user-table.sql" file when docker runs for the first time
+    networks:
+      - dbname-network
+
+networks:
+  crudapp-network:
+    driver: bridge
+
+
+volumes:
+  postgres_data:
+
+
+### When done with editing, rename this file to `docker-compose.yml` ###
