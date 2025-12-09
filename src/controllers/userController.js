@@ -1,8 +1,9 @@
+import { parse } from "dotenv";
 import { createUser, getAllUsers, getUserById, updateUser, deleteUser } from "../services/userService.js";
 
 
 const handleResponse = (res, message, status, data) => {
-    res.status(status).json(message, data);
+    return res.status(status).json({message: message, data: data});
 }
 
 export const userCreate = async (req, res, next) => {
@@ -27,7 +28,7 @@ export const usersGetAll = async (req, res, next) => {
 export const userGetById = async (req, res, next) => {
     const { id } = req.params;
     try {
-        const user = await getUserById(id);
+        const user = await getUserById(parseInt(id));
         if(!user){
             return handleResponse(res, 'User not found', 404, null);
         }
