@@ -1,5 +1,6 @@
 import { parse } from "dotenv";
-import { createUser, getAllUsers, getUserById, updateUser, deleteUser } from "../services/userService.js";
+import * as auth from '../auth/index.js';
+import { createUser, loginUser, getAllUsers, getUserById, updateUser, deleteUser } from "../services/userService.js";
 
 
 const handleResponse = (res, message, status, data) => {
@@ -8,9 +9,23 @@ const handleResponse = (res, message, status, data) => {
 
 export const userCreate = async (req, res, next) => {
     const { name, email, password } = req.body;
+    const hashedPassword = await auth.hashPassword(password, 10);
     try {
-        const newUser = await createUser({ name, email, password });
+        const newUser = await createUser({ name, email, hashedPassword });
         handleResponse(res, 'User created successfully', 201, newUser);
+    }catch(err){
+        next(err);
+    }
+}
+
+export const userLogin = async (req, res, next) => {
+    const { email, password } = req.body;
+    try {
+        const loggedInUser = await loginUser(res, email, password);
+        if(!loggedInUser){
+            return handleResponse(res, 'Invalid email or password', 401, null);
+        }
+        handleResponse(res, 'User logged in successfully', 200, loggedInUser);
     }catch(err){
         next(err);
     }
